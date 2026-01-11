@@ -8,7 +8,6 @@ import {
 	SidebarFooter,
 	SidebarGroup,
 	SidebarGroupContent,
-	SidebarGroupLabel,
 	SidebarHeader,
 	SidebarMenuButton,
 } from "@/components/ui/sidebar";
@@ -27,8 +26,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 				{!session?.data ? (
 					<Skeleton className="h-12 w-full" />
 				) : (
-
-						<NavUser user={session?.data?.user} />
+					<NavUser user={session?.data?.user} />
 				)}
 			</SidebarHeader>
 			<SidebarContent className="mt-5 flex flex-col gap-5 text-muted-foreground">

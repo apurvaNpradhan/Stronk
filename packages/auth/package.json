@@ -1,27 +1,27 @@
 {
-  "name": "@base/auth",
-  "type": "module",
-  "exports": {
-    ".": {
-      "default": "./src/index.ts"
-    },
-    "./*": {
-      "default": "./src/*.ts"
-    }
-  },
-  "scripts": {},
-  "dependencies": {
-    "@base/db": "workspace:*",
-    "@base/transactional": "workspace:*",
-    "@base/env": "workspace:*",
-    "@better-auth/expo": "catalog:",
-    "better-auth": "catalog:",
-    "dotenv": "catalog:",
-    "resend": "^6.6.0",
-    "zod": "catalog:"
-  },
-  "devDependencies": {
-    "@base/config": "workspace:*",
-    "typescript": "catalog:"
-  }
+	"name": "@stronk/auth",
+	"type": "module",
+	"exports": {
+		".": {
+			"default": "./src/index.ts"
+		},
+		"./*": {
+			"default": "./src/*.ts"
+		}
+	},
+	"scripts": {},
+	"dependencies": {
+		"@stronk/db": "workspace:*",
+		"@stronk/transactional": "workspace:*",
+		"@stronk/env": "workspace:*",
+		"@better-auth/expo": "catalog:",
+		"better-auth": "catalog:",
+		"dotenv": "catalog:",
+		"resend": "^6.6.0",
+		"zod": "catalog:"
+	},
+	"devDependencies": {
+		"@stronk/config": "workspace:*",
+		"typescript": "catalog:"
+	}
 }

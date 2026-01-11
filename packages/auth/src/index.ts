@@ -1,16 +1,16 @@
-import { expo } from "@better-auth/expo";
-
 import { db } from "@base/db";
 import * as schema from "@base/db/schema/auth";
-import { customSession } from "better-auth/plugins";
 import { env } from "@base/env/server";
+import ChangeEmail from "@base/transactional/changeEmail";
+import DeleteAccountEmail from "@base/transactional/deleteAccount";
+import ResetPassword from "@base/transactional/resetPassword";
+import VerifyEmail from "@base/transactional/verifyEmail";
+import { expo } from "@better-auth/expo";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { customSession } from "better-auth/plugins";
 import { Resend } from "resend";
-import VerifyEmail from "@base/transactional/verifyEmail";
-import ResetPassword from "@base/transactional/resetPassword";
-import ChangeEmail from "@base/transactional/changeEmail";
-import { waitUntil } from "cloudflare:workers";
+
 const resend = new Resend(env.RESEND_API_KEY as string);
 export const auth = betterAuth({
 	database: drizzleAdapter(db, {
@@ -21,7 +21,7 @@ export const auth = betterAuth({
 	emailAndPassword: {
 		enabled: true,
 		requireEmailVerification: false,
-		sendResetPassword: async (data, request) => {
+		sendResetPassword: async (data) => {
 			const { user, url } = data;
 			await resend.emails.send({
 				from: `${env.RESEND_EMAIL_SENDER_NAME} <${env.RESEND_EMAIL_SENDER_ADDRESS}>`,
@@ -37,8 +37,7 @@ export const auth = betterAuth({
 	},
 
 	emailVerification: {
-		// sendOnSignUp: true,
-		autoSignInAfterVerification: true,
+		sendOnSignUp: true,
 		sendVerificationEmail: async ({ user, url }) => {
 			await resend.emails.send({
 				from: `${env.RESEND_EMAIL_SENDER_NAME} <${env.RESEND_EMAIL_SENDER_ADDRESS}>`,
@@ -49,7 +48,7 @@ export const auth = betterAuth({
 		},
 	},
 
-/* 	 session: {
+	/* 	 session: {
 	   cookieCache: {
 	     enabled: true,
 	     maxAge: 2*60,
@@ -71,35 +70,35 @@ export const auth = betterAuth({
 	secret: env.BETTER_AUTH_SECRET,
 	baseURL: env.BETTER_AUTH_URL,
 
-user: {
-  changeEmail: {
-    enabled: true,
-    updateEmailWithoutVerification: false, 
-	async sendChangeEmailVerification(data, request) {
-		const { user,newEmail, url } = data;
-		console.log("sendChangeEmailVerification", data, request);
-		await resend.emails.send({
-			from: `${env.RESEND_EMAIL_SENDER_NAME} <${env.RESEND_EMAIL_SENDER_ADDRESS}>`,
-			to: newEmail,
-			subject: "Verify your email",
-			react: VerifyEmail({ username: user.name, verifyUrl: url }),
-		});
-	},
-	async sendChangeEmailConfirmation({ user, newEmail, url }) {
-      await resend.emails.send({
-        from: `${env.RESEND_EMAIL_SENDER_NAME} <${env.RESEND_EMAIL_SENDER_ADDRESS}>`,
-        to: user.email,
-        subject: "Approve email change",
-        react: ChangeEmail({
-          username: user.name,
-          newEmail,
-          changeEmailUrl: url,
-        }),
-      }) ;
-      
-    },
-  },
-		
+	user: {
+		deleteUser: {
+			enabled: true,
+			sendDeleteAccountVerification: async ({ user, url }) => {
+				await resend.emails.send({
+					from: `${env.RESEND_EMAIL_SENDER_NAME} <${env.RESEND_EMAIL_SENDER_ADDRESS}>`,
+					to: user.email,
+					subject: "Delete your account",
+					react: DeleteAccountEmail({ username: user.name, deleteUrl: url }),
+				});
+			},
+		},
+		changeEmail: {
+			enabled: true,
+			updateEmailWithoutVerification: false,
+			async sendChangeEmailConfirmation({ user, newEmail, url }) {
+				await resend.emails.send({
+					from: `${env.RESEND_EMAIL_SENDER_NAME} <${env.RESEND_EMAIL_SENDER_ADDRESS}>`,
+					to: user.email,
+					subject: "Approve email change",
+					react: ChangeEmail({
+						username: user.name,
+						newEmail,
+						changeEmailUrl: url,
+					}),
+				});
+			},
+		},
+
 		additionalFields: {
 			onboardingCompleted: {
 				type: "date",
@@ -129,11 +128,13 @@ user: {
 
 	plugins: [
 		expo(),
-		customSession(async ({ user,session }) => {
+		customSession(async ({ user, session }) => {
 			return {
 				user: {
 					...user,
-					onboardingCompleted: (user as any).onboardingCompleted,
+					onboardingCompleted: (
+						user as { onboardingCompleted?: string | Date | null }
+					).onboardingCompleted,
 				},
 				session: {
 					...session,

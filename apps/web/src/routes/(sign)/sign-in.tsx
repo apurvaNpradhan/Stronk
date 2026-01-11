@@ -12,5 +12,5 @@ function SignInPage() {
 				<SignInForm />
 			</div>
 		</div>
-	)
+	);
 }

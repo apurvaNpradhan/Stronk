@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import SettingLayout from "@/components/layout/setting-layout";
 import { PreferencesForm } from "@/features/settings/components/preferences-form";
-import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
-import { useIsMobile } from "@/hooks/use-mobile";
 
-export const Route = createFileRoute("/(authenicated)/settings/account/preferences/")({
+export const Route = createFileRoute(
+	"/(authenicated)/settings/account/preferences/",
+)({
 	component: RouteComponent,
 	head: () => ({
 		meta: [
@@ -21,7 +21,7 @@ export const Route = createFileRoute("/(authenicated)/settings/account/preferenc
 
 function RouteComponent() {
 	return (
-		<SettingLayout >
+		<SettingLayout>
 			<div className="mx-auto mt-15 flex max-w-4xl flex-col gap-7 p-6">
 				<span className="font-bold text-3xl">Preferences</span>
 				<PreferencesForm />

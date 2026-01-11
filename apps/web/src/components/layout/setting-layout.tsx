@@ -1,8 +1,8 @@
 import React from "react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { SettingSidebar } from "./sidebar/setting-sidebar";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 interface MainLayoutProps {
 	children: React.ReactNode;
@@ -35,14 +35,13 @@ export default function SettingLayout({
 		1: "h-[calc(100svh-40px)] lg:h-[calc(100svh-56px)]",
 		2: "h-[calc(100svh-80px)] lg:h-[calc(100svh-96px)]",
 	};
-	const isMobile=useIsMobile()
+	const isMobile = useIsMobile();
 	return (
 		<SidebarProvider>
 			<SettingSidebar />
 			<div className="h-svh w-full overflow-hidden lg:p-2">
-				{isMobile&&<SidebarTrigger/>}
+				{isMobile && <SidebarTrigger />}
 				<div className="flex h-full w-full flex-col items-center justify-start overflow-hidden bg-container lg:rounded-md lg:border">
-
 					{header}
 					<div
 						className={cn(

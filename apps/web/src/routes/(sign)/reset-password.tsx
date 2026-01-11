@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ResetPasswordForm } from "@/features/auth/components/reset-password-form";
 import { z } from "zod";
+import { ResetPasswordForm } from "@/features/auth/components/reset-password-form";
 
 export const Route = createFileRoute("/(sign)/reset-password")({
 	validateSearch: z.object({
@@ -16,5 +16,5 @@ function ResetPasswordPage() {
 				<ResetPasswordForm />
 			</div>
 		</div>
-	)
+	);
 }

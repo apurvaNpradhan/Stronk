@@ -5,16 +5,16 @@
     "": {
       "name": "base",
       "dependencies": {
-        "@base/env": "workspace:*",
         "@fontsource-variable/inter": "^5.2.8",
+        "@stronk/env": "workspace:*",
         "dotenv": "catalog:",
         "zod": "catalog:",
         "zustand": "^5.0.9",
       },
       "devDependencies": {
-        "@base/config": "workspace:*",
         "@biomejs/biome": "^2.2.0",
         "@cloudflare/workers-types": "catalog:",
+        "@stronk/config": "workspace:*",
         "@types/node": "^22.13.14",
         "husky": "^9.1.7",
         "lint-staged": "^16.1.2",
@@ -26,8 +26,6 @@
       "name": "native",
       "version": "1.0.0",
       "dependencies": {
-        "@base/api": "workspace:*",
-        "@base/env": "workspace:*",
         "@better-auth/expo": "catalog:",
         "@expo/metro-runtime": "~6.1.2",
         "@expo/vector-icons": "^15.0.3",
@@ -36,6 +34,8 @@
         "@orpc/tanstack-query": "catalog:",
         "@react-navigation/drawer": "^7.3.9",
         "@react-navigation/elements": "^2.8.1",
+        "@stronk/api": "workspace:*",
+        "@stronk/env": "workspace:*",
         "@tanstack/react-query": "catalog:",
         "better-auth": "catalog:",
         "dotenv": "catalog:",
@@ -67,7 +67,7 @@
         "zod": "catalog:",
       },
       "devDependencies": {
-        "@base/config": "workspace:*",
+        "@stronk/config": "workspace:*",
         "@types/node": "^24.10.0",
         "@types/react": "~19.1.0",
         "typescript": "catalog:",
@@ -76,21 +76,21 @@
     "apps/server": {
       "name": "server",
       "dependencies": {
-        "@base/api": "workspace:*",
-        "@base/auth": "workspace:*",
-        "@base/db": "workspace:*",
-        "@base/env": "workspace:*",
         "@orpc/openapi": "catalog:",
         "@orpc/server": "catalog:",
         "@orpc/zod": "catalog:",
+        "@stronk/api": "workspace:*",
+        "@stronk/auth": "workspace:*",
+        "@stronk/db": "workspace:*",
+        "@stronk/env": "workspace:*",
         "better-auth": "catalog:",
         "dotenv": "catalog:",
         "hono": "^4.8.2",
         "zod": "catalog:",
       },
       "devDependencies": {
-        "@base/config": "workspace:*",
         "@cloudflare/workers-types": "catalog:",
+        "@stronk/config": "workspace:*",
         "@types/node": "^22.13.14",
         "alchemy": "catalog:",
         "tsdown": "^0.16.5",
@@ -103,13 +103,13 @@
       "version": "0.0.0",
       "dependencies": {
         "@base-ui/react": "^1.0.0",
-        "@base/api": "workspace:*",
-        "@base/auth": "workspace:*",
-        "@base/env": "workspace:*",
         "@hookform/resolvers": "^5.2.2",
         "@orpc/client": "catalog:",
         "@orpc/server": "catalog:",
         "@orpc/tanstack-query": "catalog:",
+        "@stronk/api": "workspace:*",
+        "@stronk/auth": "workspace:*",
+        "@stronk/env": "workspace:*",
         "@tabler/icons-react": "^3.36.1",
         "@tailwindcss/vite": "^4.0.15",
         "@tanstack/react-form": "^1.12.3",
@@ -132,7 +132,7 @@
         "zod": "catalog:",
       },
       "devDependencies": {
-        "@base/config": "workspace:*",
+        "@stronk/config": "workspace:*",
         "@tanstack/react-query-devtools": "^5.91.1",
         "@tanstack/react-router-devtools": "^1.141.1",
         "@tanstack/router-plugin": "^1.141.1",
@@ -149,63 +149,63 @@
       },
     },
     "packages/api": {
-      "name": "@base/api",
+      "name": "@stronk/api",
       "dependencies": {
-        "@base/auth": "workspace:*",
-        "@base/db": "workspace:*",
-        "@base/env": "workspace:*",
         "@orpc/client": "catalog:",
         "@orpc/openapi": "catalog:",
         "@orpc/server": "catalog:",
         "@orpc/zod": "catalog:",
+        "@stronk/auth": "workspace:*",
+        "@stronk/db": "workspace:*",
+        "@stronk/env": "workspace:*",
         "dotenv": "catalog:",
         "zod": "catalog:",
       },
       "devDependencies": {
-        "@base/config": "workspace:*",
+        "@stronk/config": "workspace:*",
         "typescript": "catalog:",
       },
     },
     "packages/auth": {
-      "name": "@base/auth",
+      "name": "@stronk/auth",
       "dependencies": {
-        "@base/db": "workspace:*",
-        "@base/env": "workspace:*",
-        "@base/transactional": "workspace:*",
         "@better-auth/expo": "catalog:",
+        "@stronk/db": "workspace:*",
+        "@stronk/env": "workspace:*",
+        "@stronk/transactional": "workspace:*",
         "better-auth": "catalog:",
         "dotenv": "catalog:",
         "resend": "^6.6.0",
         "zod": "catalog:",
       },
       "devDependencies": {
-        "@base/config": "workspace:*",
+        "@stronk/config": "workspace:*",
         "typescript": "catalog:",
       },
     },
     "packages/config": {
-      "name": "@base/config",
+      "name": "@stronk/config",
       "version": "0.0.0",
     },
     "packages/db": {
-      "name": "@base/db",
+      "name": "@stronk/db",
       "dependencies": {
-        "@base/env": "workspace:*",
         "@neondatabase/serverless": "^1.0.2",
+        "@stronk/env": "workspace:*",
         "dotenv": "catalog:",
         "drizzle-orm": "^0.45.1",
         "ws": "^8.18.3",
         "zod": "catalog:",
       },
       "devDependencies": {
-        "@base/config": "workspace:*",
+        "@stronk/config": "workspace:*",
         "@types/ws": "^8.18.1",
         "drizzle-kit": "^0.31.8",
         "typescript": "catalog:",
       },
     },
     "packages/env": {
-      "name": "@base/env",
+      "name": "@stronk/env",
       "version": "0.0.0",
       "dependencies": {
         "@t3-oss/env-core": "^0.13.1",
@@ -213,26 +213,26 @@
         "zod": "catalog:",
       },
       "devDependencies": {
-        "@base/config": "workspace:*",
-        "@base/infra": "workspace:*",
+        "@stronk/config": "workspace:*",
+        "@stronk/infra": "workspace:*",
         "@types/node": "^22.13.14",
         "typescript": "catalog:",
       },
     },
     "packages/infra": {
-      "name": "@base/infra",
+      "name": "@stronk/infra",
       "dependencies": {
         "dotenv": "catalog:",
         "zod": "catalog:",
       },
       "devDependencies": {
-        "@base/config": "workspace:*",
+        "@stronk/config": "workspace:*",
         "alchemy": "catalog:",
         "typescript": "catalog:",
       },
     },
     "packages/transactional": {
-      "name": "@base/transactional",
+      "name": "@stronk/transactional",
       "version": "0.1.0",
       "dependencies": {
         "@react-email/components": "1.0.4",
@@ -240,8 +240,8 @@
         "react-dom": "19.2.3",
       },
       "devDependencies": {
-        "@base/config": "workspace:*",
         "@react-email/preview-server": "5.2.1",
+        "@stronk/config": "workspace:*",
         "@types/bun": "latest",
         "@types/react": "^19",
         "@types/react-dom": "^19",
@@ -522,20 +522,6 @@
     "@base-ui/react": ["@base-ui/react@1.0.0", "", { "dependencies": { "@babel/runtime": "^7.28.4", "@base-ui/utils": "0.2.3", "@floating-ui/react-dom": "^2.1.6", "@floating-ui/utils": "^0.2.10", "reselect": "^5.1.1", "tabbable": "^6.3.0", "use-sync-external-store": "^1.6.0" }, "peerDependencies": { "@types/react": "^17 || ^18 || ^19", "react": "^17 || ^18 || ^19", "react-dom": "^17 || ^18 || ^19" }, "optionalPeers": ["@types/react"] }, "sha512-4USBWz++DUSLTuIYpbYkSgy1F9ZmNG9S/lXvlUN6qMK0P0RlW+6eQmDUB4DgZ7HVvtXl4pvi4z5J2fv6Z3+9hg=="],
 
     "@base-ui/utils": ["@base-ui/utils@0.2.3", "", { "dependencies": { "@babel/runtime": "^7.28.4", "@floating-ui/utils": "^0.2.10", "reselect": "^5.1.1", "use-sync-external-store": "^1.6.0" }, "peerDependencies": { "@types/react": "^17 || ^18 || ^19", "react": "^17 || ^18 || ^19", "react-dom": "^17 || ^18 || ^19" }, "optionalPeers": ["@types/react"] }, "sha512-/CguQ2PDaOzeVOkllQR8nocJ0FFIDqsWIcURsVmm53QGo8NhFNpePjNlyPIB41luxfOqnG7PU0xicMEw3ls7XQ=="],
-
-    "@base/api": ["@base/api@workspace:packages/api"],
-
-    "@base/auth": ["@base/auth@workspace:packages/auth"],
-
-    "@base/config": ["@base/config@workspace:packages/config"],
-
-    "@base/db": ["@base/db@workspace:packages/db"],
-
-    "@base/env": ["@base/env@workspace:packages/env"],
-
-    "@base/infra": ["@base/infra@workspace:packages/infra"],
-
-    "@base/transactional": ["@base/transactional@workspace:packages/transactional"],
 
     "@better-auth/core": ["@better-auth/core@1.4.10", "", { "dependencies": { "@standard-schema/spec": "^1.0.0", "zod": "^4.1.12" }, "peerDependencies": { "@better-auth/utils": "0.3.0", "@better-fetch/fetch": "1.1.21", "better-call": "1.1.7", "jose": "^6.1.0", "kysely": "^0.28.5", "nanostores": "^1.0.1" } }, "sha512-AThrfb6CpG80wqkanfrbN2/fGOYzhGladHFf3JhaWt/3/Vtf4h084T6PJLrDE7M/vCCGYvDI1DkvP3P1OB2HAg=="],
 
@@ -1238,6 +1224,20 @@
     "@standard-schema/spec": ["@standard-schema/spec@1.1.0", "", {}, "sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w=="],
 
     "@standard-schema/utils": ["@standard-schema/utils@0.3.0", "", {}, "sha512-e7Mew686owMaPJVNNLs55PUvgz371nKgwsc4vxE49zsODpJEnxgxRo2y/OKrqueavXgZNMDVj3DdHFlaSAeU8g=="],
+
+    "@stronk/api": ["@stronk/api@workspace:packages/api"],
+
+    "@stronk/auth": ["@stronk/auth@workspace:packages/auth"],
+
+    "@stronk/config": ["@stronk/config@workspace:packages/config"],
+
+    "@stronk/db": ["@stronk/db@workspace:packages/db"],
+
+    "@stronk/env": ["@stronk/env@workspace:packages/env"],
+
+    "@stronk/infra": ["@stronk/infra@workspace:packages/infra"],
+
+    "@stronk/transactional": ["@stronk/transactional@workspace:packages/transactional"],
 
     "@swc/helpers": ["@swc/helpers@0.5.15", "", { "dependencies": { "tslib": "^2.8.0" } }, "sha512-JQ5TuMi45Owi4/BIMAJBoSQoOJu12oOk/gADqlcUL9JEdHB8vyjUSsxqeNXnmXHjYKMi2WcYtezGEEhqUI/E2g=="],
 

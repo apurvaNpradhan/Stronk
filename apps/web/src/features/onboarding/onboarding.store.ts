@@ -1,9 +1,9 @@
+import z from "zod";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import z from "zod";
 
 export const onboardingSchema = z.object({
-  temp:z.string().optional(),
+	temp: z.string().optional(),
 });
 
 export type OnboardingSchema = z.infer<typeof onboardingSchema>;
@@ -21,4 +21,4 @@ export const useOnboardingStore = create<OnboardingState>()(
 			storage: createJSONStorage(() => localStorage),
 		},
 	),
-)
+);

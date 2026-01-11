@@ -16,7 +16,6 @@ function HomeComponent() {
 				<p className="text-lg">
 					A fullstack template for building web applications.
 				</p>
-
 			</div>
 		</PublicLayout>
 	);

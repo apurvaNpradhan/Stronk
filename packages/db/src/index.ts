@@ -1,8 +1,7 @@
-import { env } from "@base/env/server";
 import { neon, neonConfig } from "@neondatabase/serverless";
+import { env } from "@stronk/env/server";
 import { drizzle } from "drizzle-orm/neon-http";
 import ws from "ws";
-
 import * as schema from "./schema";
 
 neonConfig.webSocketConstructor = ws;

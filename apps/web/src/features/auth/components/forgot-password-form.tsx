@@ -1,6 +1,7 @@
+import { env } from "@base/env/web";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
+import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -23,7 +24,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
-import { env } from "@base/env/web";
 
 const formSchema = z.object({
 	email: z.string().email(),
@@ -48,7 +48,6 @@ export function ForgotPasswordForm({
 		const { error } = await authClient.requestPasswordReset({
 			email: values.email,
 			redirectTo: `${env.VITE_BASE_URL}/reset-password`,
-			
 		});
 
 		if (error) {

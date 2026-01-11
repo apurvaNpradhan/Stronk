@@ -1,11 +1,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { env } from "@base/env/web";
+import { env } from "@stronk/env/web";
 import {
 	IconBrandGithubFilled,
 	IconBrandGoogleFilled,
+	IconEye,
+	IconEyeOff,
 	IconLoader2,
 } from "@tabler/icons-react";
 import { Link, useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -20,10 +23,9 @@ import {
 	FieldSeparator,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { usePending } from "@/components/ui/pending";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
-import { usePending } from "@/components/ui/pending";
 
 const signUpSchema = z
 	.object({
@@ -57,6 +59,8 @@ export default function SignUpForm({
 	});
 
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [showPassword, setShowPassword] = useState(false);
+	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 	const { pendingProps, isPending } = usePending({ isPending: isSubmitting });
 
 	const handleSocialSignIn = async (provider: "google" | "github") => {
@@ -70,14 +74,12 @@ export default function SignUpForm({
 		setIsSubmitting(true);
 		toast.promise(
 			(async () => {
-				const { data: resData, error } = await authClient.signUp.email(
-					{
-						email: data.email,
-						password: data.password,
-						name: data.name,
-						callbackURL: `${env.VITE_BASE_URL}/dashboard`,
-					}
-				);
+				const { data: resData, error } = await authClient.signUp.email({
+					email: data.email,
+					password: data.password,
+					name: data.name,
+					callbackURL: `${env.VITE_BASE_URL}/dashboard`,
+				});
 
 				if (error) {
 					setIsSubmitting(false);
@@ -89,7 +91,8 @@ export default function SignUpForm({
 			})(),
 			{
 				loading: "Creating account...",
-				success: "Signed up successfully. Please check your email for verification.",
+				success:
+					"Signed up successfully. Please check your email for verification.",
 				error: (error) => error.message || "Failed to sign up",
 			},
 		);
@@ -115,7 +118,12 @@ export default function SignUpForm({
 									name="name"
 									render={({ field, fieldState }) => (
 										<>
-											<Input {...field} id="name" disabled={isPending} placeholder="John Doe" />
+											<Input
+												{...field}
+												id="name"
+												disabled={isPending}
+												placeholder="John Doe"
+											/>
 											{fieldState.error && (
 												<FieldError errors={[fieldState.error]} />
 											)}
@@ -159,13 +167,26 @@ export default function SignUpForm({
 											name="password"
 											render={({ field, fieldState }) => (
 												<>
-													<Input
-														{...field}
-														id="password"
-														type="password"
-														disabled={isPending}
-														autoComplete="new-password"
-													/>
+													<div className="relative">
+														<Input
+															{...field}
+															id="password"
+															type={showPassword ? "text" : "password"}
+															disabled={isPending}
+															autoComplete="new-password"
+														/>
+														<button
+															type="button"
+															onClick={() => setShowPassword(!showPassword)}
+															className="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+														>
+															{showPassword ? (
+																<IconEyeOff size={16} />
+															) : (
+																<IconEye size={16} />
+															)}
+														</button>
+													</div>
 													{fieldState.error && (
 														<FieldError errors={[fieldState.error]} />
 													)}
@@ -182,13 +203,28 @@ export default function SignUpForm({
 											name="confirmPassword"
 											render={({ field, fieldState }) => (
 												<>
-													<Input
-														{...field}
-														id="confirm-password"
-														type="password"
-														disabled={isPending}
-														autoComplete="new-password"
-													/>
+													<div className="relative">
+														<Input
+															{...field}
+															id="confirm-password"
+															type={showConfirmPassword ? "text" : "password"}
+															disabled={isPending}
+															autoComplete="new-password"
+														/>
+														<button
+															type="button"
+															onClick={() =>
+																setShowConfirmPassword(!showConfirmPassword)
+															}
+															className="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+														>
+															{showConfirmPassword ? (
+																<IconEyeOff size={16} />
+															) : (
+																<IconEye size={16} />
+															)}
+														</button>
+													</div>
 													{fieldState.error && (
 														<FieldError errors={[fieldState.error]} />
 													)}

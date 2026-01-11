@@ -1,22 +1,22 @@
 {
-  "name": "@base/env",
-  "version": "0.0.0",
-  "private": true,
-  "type": "module",
-  "exports": {
-    "./server": "./src/server.ts",
-    "./web": "./src/web.ts",
-    "./native": "./src/native.ts"
-  },
-  "dependencies": {
-    "@t3-oss/env-core": "^0.13.1",
-    "dotenv": "catalog:",
-    "zod": "catalog:"
-  },
-  "devDependencies": {
-    "@base/config": "workspace:*",
-    "@base/infra": "workspace:*",
-    "@types/node": "^22.13.14",
-    "typescript": "catalog:"
-  }
+	"name": "@stronk/env",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"exports": {
+		"./server": "./src/server.ts",
+		"./web": "./src/web.ts",
+		"./native": "./src/native.ts"
+	},
+	"dependencies": {
+		"@t3-oss/env-core": "^0.13.1",
+		"dotenv": "catalog:",
+		"zod": "catalog:"
+	},
+	"devDependencies": {
+		"@stronk/config": "workspace:*",
+		"@stronk/infra": "workspace:*",
+		"@types/node": "^22.13.14",
+		"typescript": "catalog:"
+	}
 }

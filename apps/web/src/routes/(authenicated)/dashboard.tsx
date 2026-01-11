@@ -1,8 +1,6 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import AppLayout from "@/components/layout/app-layout";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { orpc } from "@/utils/orpc";
 
 export const Route = createFileRoute("/(authenicated)/dashboard")({
 	component: RouteComponent,
@@ -17,7 +15,7 @@ function RouteComponent() {
 				</div>
 			</div>
 		</AppLayout>
-	)
+	);
 }
 
 function Header() {
@@ -28,7 +26,7 @@ function Header() {
 				<span className="font-semibold text-sm">Dashboard</span>
 			</div>
 		</div>
-	)
+	);
 }
 
 function getGreeting() {

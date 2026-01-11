@@ -39,7 +39,7 @@ export function SettingSidebar({
 			</SidebarHeader>
 			<SidebarContent>
 				<SidebarGroup className="p-0">
-					<SidebarGroupLabel className=" font-medium text-muted-foreground/80">
+					<SidebarGroupLabel className="font-medium text-muted-foreground/80">
 						Account
 					</SidebarGroupLabel>
 					<SidebarGroupContent className="flex flex-col gap-1">

@@ -18,6 +18,7 @@ import { Route as signResetPasswordRouteImport } from './routes/(sign)/reset-pas
 import { Route as signForgotPasswordRouteImport } from './routes/(sign)/forgot-password'
 import { Route as publicTosRouteImport } from './routes/(public)/tos'
 import { Route as publicPrivacyRouteImport } from './routes/(public)/privacy'
+import { Route as publicGoodbyeRouteImport } from './routes/(public)/goodbye'
 import { Route as authenicatedDashboardRouteImport } from './routes/(authenicated)/dashboard'
 import { Route as authenicatedOnboardingRouteRouteImport } from './routes/(authenicated)/onboarding/route'
 import { Route as authenicatedOnboardingCompleteRouteImport } from './routes/(authenicated)/onboarding/complete'
@@ -67,6 +68,11 @@ const publicPrivacyRoute = publicPrivacyRouteImport.update({
   path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
+const publicGoodbyeRoute = publicGoodbyeRouteImport.update({
+  id: '/(public)/goodbye',
+  path: '/goodbye',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const authenicatedDashboardRoute = authenicatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -100,6 +106,7 @@ const authenicatedSettingsAccountPreferencesIndexRoute =
 export interface FileRoutesByFullPath {
   '/onboarding': typeof authenicatedOnboardingRouteRouteWithChildren
   '/dashboard': typeof authenicatedDashboardRoute
+  '/goodbye': typeof publicGoodbyeRoute
   '/privacy': typeof publicPrivacyRoute
   '/tos': typeof publicTosRoute
   '/forgot-password': typeof signForgotPasswordRoute
@@ -114,6 +121,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/onboarding': typeof authenicatedOnboardingRouteRouteWithChildren
   '/dashboard': typeof authenicatedDashboardRoute
+  '/goodbye': typeof publicGoodbyeRoute
   '/privacy': typeof publicPrivacyRoute
   '/tos': typeof publicTosRoute
   '/forgot-password': typeof signForgotPasswordRoute
@@ -131,6 +139,7 @@ export interface FileRoutesById {
   '/(sign)': typeof signRouteRouteWithChildren
   '/(authenicated)/onboarding': typeof authenicatedOnboardingRouteRouteWithChildren
   '/(authenicated)/dashboard': typeof authenicatedDashboardRoute
+  '/(public)/goodbye': typeof publicGoodbyeRoute
   '/(public)/privacy': typeof publicPrivacyRoute
   '/(public)/tos': typeof publicTosRoute
   '/(sign)/forgot-password': typeof signForgotPasswordRoute
@@ -147,6 +156,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/onboarding'
     | '/dashboard'
+    | '/goodbye'
     | '/privacy'
     | '/tos'
     | '/forgot-password'
@@ -161,6 +171,7 @@ export interface FileRouteTypes {
   to:
     | '/onboarding'
     | '/dashboard'
+    | '/goodbye'
     | '/privacy'
     | '/tos'
     | '/forgot-password'
@@ -177,6 +188,7 @@ export interface FileRouteTypes {
     | '/(sign)'
     | '/(authenicated)/onboarding'
     | '/(authenicated)/dashboard'
+    | '/(public)/goodbye'
     | '/(public)/privacy'
     | '/(public)/tos'
     | '/(sign)/forgot-password'
@@ -192,6 +204,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   authenicatedRouteRoute: typeof authenicatedRouteRouteWithChildren
   signRouteRoute: typeof signRouteRouteWithChildren
+  publicGoodbyeRoute: typeof publicGoodbyeRoute
   publicPrivacyRoute: typeof publicPrivacyRoute
   publicTosRoute: typeof publicTosRoute
   publicIndexRoute: typeof publicIndexRoute
@@ -260,6 +273,13 @@ declare module '@tanstack/react-router' {
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof publicPrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(public)/goodbye': {
+      id: '/(public)/goodbye'
+      path: '/goodbye'
+      fullPath: '/goodbye'
+      preLoaderRoute: typeof publicGoodbyeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(authenicated)/dashboard': {
@@ -355,6 +375,7 @@ const signRouteRouteWithChildren = signRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   authenicatedRouteRoute: authenicatedRouteRouteWithChildren,
   signRouteRoute: signRouteRouteWithChildren,
+  publicGoodbyeRoute: publicGoodbyeRoute,
   publicPrivacyRoute: publicPrivacyRoute,
   publicTosRoute: publicTosRoute,
   publicIndexRoute: publicIndexRoute,

@@ -11,131 +11,128 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 interface UsePendingOptions {
-  id?: string;
-  isPending?: boolean;
-  disabled?: boolean;
+	id?: string;
+	isPending?: boolean;
+	disabled?: boolean;
 }
 
 interface UsePendingReturn<T extends HTMLElement = HTMLElement> {
-  pendingProps: React.HTMLAttributes<T> & {
-    "aria-busy"?: "true";
-    "aria-disabled"?: "true";
-    "data-pending"?: true;
-    "data-disabled"?: true;
-  };
-  isPending: boolean;
+	pendingProps: React.HTMLAttributes<T> & {
+		"aria-busy"?: "true";
+		"aria-disabled"?: "true";
+		"data-pending"?: true;
+		"data-disabled"?: true;
+	};
+	isPending: boolean;
 }
 
 function usePending<T extends HTMLElement = HTMLElement>(
-  options: UsePendingOptions = {},
+	options: UsePendingOptions = {},
 ): UsePendingReturn<T> {
-  const { id, isPending = false, disabled = false } = options;
+	const { id, isPending = false, disabled = false } = options;
 
-  const instanceId = React.useId();
-  const pendingId = id || instanceId;
+	const instanceId = React.useId();
+	const pendingId = id || instanceId;
 
-  const pendingProps = React.useMemo(() => {
-    const props: React.HTMLAttributes<T> & {
-      "aria-busy"?: "true";
-      "aria-disabled"?: "true";
-      "data-pending"?: true;
-      "data-disabled"?: true;
-    } = {
-      id: pendingId,
-    };
+	const pendingProps = React.useMemo(() => {
+		const props: React.HTMLAttributes<T> & {
+			"aria-busy"?: "true";
+			"aria-disabled"?: "true";
+			"data-pending"?: true;
+			"data-disabled"?: true;
+		} = {
+			id: pendingId,
+		};
 
-    if (isPending) {
-      props["aria-busy"] = "true";
-      props["aria-disabled"] = "true";
-      props["data-pending"] = true;
+		if (isPending) {
+			props["aria-busy"] = "true";
+			props["aria-disabled"] = "true";
+			props["data-pending"] = true;
 
-      function onEventPrevent(event: React.SyntheticEvent) {
-        event.preventDefault();
-      }
+			function onEventPrevent(event: React.SyntheticEvent) {
+				event.preventDefault();
+			}
 
-      function onKeyEventPrevent(event: React.KeyboardEvent<T>) {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-        }
-      }
+			function onKeyEventPrevent(event: React.KeyboardEvent<T>) {
+				if (event.key === "Enter" || event.key === " ") {
+					event.preventDefault();
+				}
+			}
 
-      props.onClick = onEventPrevent;
-      props.onPointerDown = onEventPrevent;
-      props.onPointerUp = onEventPrevent;
-      props.onMouseDown = onEventPrevent;
-      props.onMouseUp = onEventPrevent;
-      props.onKeyDown = onKeyEventPrevent;
-      props.onKeyUp = onKeyEventPrevent;
-    }
+			props.onClick = onEventPrevent;
+			props.onPointerDown = onEventPrevent;
+			props.onPointerUp = onEventPrevent;
+			props.onMouseDown = onEventPrevent;
+			props.onMouseUp = onEventPrevent;
+			props.onKeyDown = onKeyEventPrevent;
+			props.onKeyUp = onKeyEventPrevent;
+		}
 
-    if (disabled) {
-      props["data-disabled"] = true;
-    }
+		if (disabled) {
+			props["data-disabled"] = true;
+		}
 
-    return props;
-  }, [isPending, disabled, pendingId]);
+		return props;
+	}, [isPending, disabled, pendingId]);
 
-  return React.useMemo(() => {
-    return {
-      pendingProps,
-      isPending,
-    };
-  }, [pendingProps, isPending]);
+	return React.useMemo(() => {
+		return {
+			pendingProps,
+			isPending,
+		};
+	}, [pendingProps, isPending]);
 }
 
-const pendingVariants = cva(
-  "transition-opacity",
-  {
-    variants: {
-      pending: {
-        true: "opacity-50 cursor-not-allowed",
-        false: "opacity-100",
-      },
-    },
-    defaultVariants: {
-      pending: false,
-    },
-  }
-);
+const pendingVariants = cva("transition-opacity", {
+	variants: {
+		pending: {
+			true: "cursor-not-allowed opacity-50",
+			false: "opacity-100",
+		},
+	},
+	defaultVariants: {
+		pending: false,
+	},
+});
 
 interface PendingProps extends useRender.ComponentProps<"div"> {
-  isPending?: boolean;
-  disabled?: boolean;
+	isPending?: boolean;
+	disabled?: boolean;
 }
 
 function Pending({
-  id,
-  isPending = false,
-  disabled = false,
-  className,
-  render,
-  ...props
+	id,
+	isPending = false,
+	disabled = false,
+	className,
+	render,
+	...props
 }: PendingProps & VariantProps<typeof pendingVariants>) {
-  const { pendingProps } = usePending({ id, isPending, disabled });
+	const { pendingProps } = usePending({ id, isPending, disabled });
 
-  return useRender({
-    defaultTagName: "div",
-    props: mergeProps<"div">(
-      {
-        className: cn(pendingVariants({ pending: isPending, className })),
-      },
-      pendingProps,
-      props
-    ),
-    render,
-    state: {
-      slot: "pending",
-      isPending,
-      disabled,
-    },
-  });
+	return useRender({
+		defaultTagName: "div",
+		props: mergeProps<"div">(
+			{
+				className: cn(pendingVariants({ pending: isPending, className })),
+			},
+			pendingProps,
+			props,
+		),
+		render,
+		state: {
+			slot: "pending",
+			isPending,
+			disabled,
+		},
+	});
 }
 
 export {
-  Pending,
-  usePending,
-  pendingVariants,
-  type UsePendingOptions,
-  type UsePendingReturn,
-  type PendingProps,
-};;
+	Pending,
+	usePending,
+	pendingVariants,
+	type UsePendingOptions,
+	type UsePendingReturn,
+	type PendingProps,
+};

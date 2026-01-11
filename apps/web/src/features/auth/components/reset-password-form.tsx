@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
 import { Link, useNavigate, useSearch } from "@tanstack/react-router";
+import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -27,7 +27,9 @@ import { cn } from "@/lib/utils";
 const formSchema = z
 	.object({
 		password: z.string().min(8, "Password must be at least 8 characters"),
-		confirmPassword: z.string().min(8, "Password must be at least 8 characters"),
+		confirmPassword: z
+			.string()
+			.min(8, "Password must be at least 8 characters"),
 	})
 	.refine((data) => data.password === data.confirmPassword, {
 		message: "Passwords do not match",

@@ -16,7 +16,6 @@ import {
 	IconDeviceMobile,
 	IconDeviceTablet,
 	IconLoader2,
-	IconLogout,
 } from "@tabler/icons-react";
 import {
 	useMutation,
@@ -43,6 +42,7 @@ import { Separator } from "@/components/ui/separator";
 import { Status, StatusIndicator, StatusLabel } from "@/components/ui/status";
 import { authClient, sessionQueryOptions } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
+import { useModal } from "@/stores/modal.store";
 import { orpc } from "@/utils/orpc";
 
 function getBrowserInformation(userAgent: string) {
@@ -218,6 +218,7 @@ export function AccountSettingsPage() {
 		refetch,
 	} = useSuspenseQuery(sessionQueryOptions);
 	const user = session?.data?.user;
+	const { openModal } = useModal();
 
 	const [name, setName] = useState(user?.name || "");
 	const [isUpdatingName, setIsUpdatingName] = useState(false);
@@ -360,6 +361,7 @@ export function AccountSettingsPage() {
 								size="sm"
 								disabled
 								className="bg-background"
+								onClick={() => openModal("UPDATE_EMAIL")}
 							>
 								Change email
 							</Button>
@@ -379,8 +381,8 @@ export function AccountSettingsPage() {
 							<Button
 								variant="outline"
 								size="sm"
-								disabled
 								className="bg-background"
+								onClick={() => openModal("UPDATE_PASSWORD")}
 							>
 								Change password
 							</Button>
@@ -391,9 +393,13 @@ export function AccountSettingsPage() {
 
 			<div className="flex flex-col gap-4">
 				<ItemGroup className="rounded-md">
-					<Item variant="muted" className="cursor-not-allowed opacity-60">
+					<Item
+						variant="muted"
+						className="cursor-pointer transition-colors hover:bg-muted/80"
+						onClick={() => openModal("DELETE_USER")}
+					>
 						<ItemContent className="gap-1">
-							<ItemTitle className="font-medium text-red-500">
+							<ItemTitle className="font-medium text-destructive">
 								Delete my account
 							</ItemTitle>
 							<ItemDescription>
@@ -412,29 +418,25 @@ export function AccountSettingsPage() {
 				<h2 className="font-semibold text-lg">Sessions</h2>
 				<SessionManagement />
 			</div>
-						<div className="flex flex-col gap-4">
+			<div className="flex flex-col gap-4">
 				<h2 className="font-semibold text-lg">User ID</h2>
 				<div className="flex flex-row items-center justify-between">
 					<Item variant={"muted"}>
 						<ItemContent>
-							<ItemTitle>
-								user ID
-							</ItemTitle>
+							<ItemTitle>user ID</ItemTitle>
 						</ItemContent>
 						<ItemActions>
-								{user?.id}
-								<Button
+							{user?.id}
+							<Button
 								variant={"ghost"}
 								size={"icon-sm"}
 								title="Copy user ID"
 								onClick={handleCopyUserId}
-								>
-								<IconCopy   />
-								</Button>
-								
+							>
+								<IconCopy />
+							</Button>
 						</ItemActions>
 					</Item>
-
 				</div>
 			</div>
 		</div>

@@ -12,5 +12,5 @@ function ForgotPasswordPage() {
 				<ForgotPasswordForm />
 			</div>
 		</div>
-	)
+	);
 }

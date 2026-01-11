@@ -1,16 +1,18 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import { env } from "@base/env/web";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
 	IconBrandGithubFilled,
 	IconBrandGoogleFilled,
+	IconEye,
+	IconEyeOff,
 	IconLoader2,
 } from "@tabler/icons-react";
-import { Link, redirect, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
 	Card,
 	CardContent,
@@ -27,11 +29,10 @@ import {
 	FieldSeparator,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { usePending } from "@/components/ui/pending";
 import { authClient, sessionQueryOptions } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { queryClient } from "@/utils/orpc";
-import { usePending } from "@/components/ui/pending";
-import { useState } from "react";
 
 const signInSchema = z.object({
 	email: z.email("Invalid email address"),
@@ -53,7 +54,8 @@ export default function SignInForm({
 		},
 	});
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const {pendingProps, isPending} = usePending({isPending: isSubmitting});
+	const [showPassword, setShowPassword] = useState(false);
+	const { pendingProps, isPending } = usePending({ isPending: isSubmitting });
 
 	const handleSocialSignIn = async (provider: "google" | "github") => {
 		await authClient.signIn.social({
@@ -64,13 +66,12 @@ export default function SignInForm({
 
 	const onSubmit = async (data: SignInValues) => {
 		setIsSubmitting(true);
-		
+
 		toast.promise(
 			(async () => {
 				const { data: resData, error } = await authClient.signIn.email({
 					email: data.email,
 					password: data.password,
-
 				});
 
 				if (error) {
@@ -103,8 +104,9 @@ export default function SignInForm({
 					<form onSubmit={form.handleSubmit(onSubmit)}>
 						<FieldGroup>
 							<Field className="grid grid-cols-2 gap-4">
-								<Button disabled={isPending}
-								{...pendingProps}
+								<Button
+									disabled={isPending}
+									{...pendingProps}
 									variant="outline"
 									type="button"
 									onClick={() => handleSocialSignIn("github")}
@@ -113,7 +115,8 @@ export default function SignInForm({
 									<IconBrandGithubFilled className="mr-2 h-4 w-4" />
 									Github
 								</Button>
-								<Button disabled={isPending}
+								<Button
+									disabled={isPending}
 									variant="outline"
 									{...pendingProps}
 									type="button"
@@ -165,13 +168,26 @@ export default function SignInForm({
 									name="password"
 									render={({ field, fieldState }) => (
 										<>
-											<Input
-												{...field}
-												id="password"
-												type="password"
-												disabled={isPending}
-												autoComplete="current-password"
-											/>
+											<div className="relative">
+												<Input
+													{...field}
+													id="password"
+													type={showPassword ? "text" : "password"}
+													disabled={isPending}
+													autoComplete="current-password"
+												/>
+												<button
+													type="button"
+													onClick={() => setShowPassword(!showPassword)}
+													className="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+												>
+													{showPassword ? (
+														<IconEyeOff size={18} />
+													) : (
+														<IconEye size={18} />
+													)}
+												</button>
+											</div>
 											{fieldState.error && (
 												<FieldError errors={[fieldState.error]} />
 											)}
@@ -181,8 +197,9 @@ export default function SignInForm({
 							</Field>
 							<Field>
 								<Button type="submit" disabled={isPending} {...pendingProps}>
- {isPending && <IconLoader2 className="size-4 animate-spin" />}
-        {isPending ? "Signing in..." : "Sign in"}								</Button>
+									{isPending && <IconLoader2 className="size-4 animate-spin" />}
+									{isPending ? "Signing in..." : "Sign in"}{" "}
+								</Button>
 								<FieldDescription className="text-center">
 									Don&apos;t have an account?{" "}
 									<Link to="/sign-up" className="text-primary hover:underline">
