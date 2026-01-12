@@ -1,11 +1,12 @@
-import { db } from "@base/db";
-import * as schema from "@base/db/schema/auth";
-import { env } from "@base/env/server";
-import ChangeEmail from "@base/transactional/changeEmail";
-import DeleteAccountEmail from "@base/transactional/deleteAccount";
-import ResetPassword from "@base/transactional/resetPassword";
-import VerifyEmail from "@base/transactional/verifyEmail";
 import { expo } from "@better-auth/expo";
+
+import { db } from "@stronk/db";
+import * as schema from "@stronk/db/schema/auth";
+import { env } from "@stronk/env/server";
+import ChangeEmail from "@stronk/transactional/changeEmail";
+import DeleteAccountEmail from "@stronk/transactional/deleteAccount";
+import ResetPassword from "@stronk/transactional/resetPassword";
+import VerifyEmail from "@stronk/transactional/verifyEmail";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { customSession } from "better-auth/plugins";
