@@ -19,16 +19,10 @@ const Modal: React.FC<Props> = ({
 	modalSize = "md",
 	positionFromTop = "none",
 }) => {
-	const {
-		isOpen,
-		closeModal,
-		closeOnClickOutside: modalCloseOnClickOutside,
-	} = useModal();
+	const { isOpen, close } = useModal();
 
 	const shouldShow = isVisible ?? isOpen;
-	const shouldCloseOnClickOutside =
-		closeOnClickOutside ?? modalCloseOnClickOutside;
-
+	const shouldCloseOnClickOutside = true;
 	const modalSizeMap = {
 		sm: "sm:max-w-[400px]",
 		md: "sm:max-w-[550px]",
@@ -45,7 +39,7 @@ const Modal: React.FC<Props> = ({
 
 	const handleOpenChange = (open: boolean) => {
 		if (!open) {
-			closeModal();
+			close();
 			onClose?.();
 		}
 	};

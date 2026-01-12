@@ -1,130 +1,111 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
-const ModalContentTypes = [
-	//User management
-	"DELETE_USER",
-	"UPDATE_EMAIL",
+export const MODAL_TYPES = [
 	"UPDATE_PASSWORD",
-	null,
+	"UPDATE_EMAIL",
+	"FORGOT_PASSWORD",
+	"DELETE_ACCOUNT",
 ] as const;
-type ModalContentType = (typeof ModalContentTypes)[number];
 
-interface ModalState {
-	contentType: Exclude<ModalContentType, null>;
-	entityId?: string;
-	entityLabel?: string;
+export type ModalType = (typeof MODAL_TYPES)[number];
+export interface ModalInstance {
+	id: string;
+	type: ModalType;
+	data?: Record<string, unknown>;
+	title?: string;
+	description?: string;
 	closeOnClickOutside?: boolean;
 }
 
+export type ModalConfig = Omit<ModalInstance, "id"> & {
+	id?: string;
+};
+
 interface ModalStore {
-	modalStack: ModalState[];
-	modalStates: Record<string, any>;
-
-	openModal: (
-		contentType: Exclude<ModalContentType, null>,
-		entityId?: string,
-		entityLabel?: string,
-		closeOnClickOutside?: boolean,
-	) => void;
-	closeModal: () => void;
-	closeModals: (count: number) => void;
-	clearAllModals: () => void;
-
-	setModalState: (modalType: string, state: any) => void;
-	getModalState: (modalType: string) => any;
-	clearModalState: (modalType: string) => void;
-	clearAllModalStates: () => void;
+	stack: ModalInstance[];
+	open: (config: ModalConfig) => void;
+	close: () => void;
+	closeAll: () => void;
+	replace: (config: ModalConfig) => void;
+	update: (id: string, updates: Partial<Omit<ModalInstance, "id">>) => void;
 }
 
 export const useModalStore = create<ModalStore>()(
 	devtools(
 		(set, get) => ({
-			modalStack: [],
-			modalStates: {},
+			stack: [],
 
-			openModal: (
-				contentType,
-				entityId,
-				entityLabel,
-				closeOnClickOutside = true,
-			) => {
-				const newModal: ModalState = {
-					contentType,
-					entityId,
-					entityLabel,
-					closeOnClickOutside,
+			open: (config) => {
+				const id =
+					config.id || `${config.type}-${JSON.stringify(config.data || {})}`;
+				const currentStack = get().stack;
+
+				const index = currentStack.findIndex((m) => m.id === id);
+				if (index !== -1) {
+					const newStack = [...currentStack];
+					const [item] = newStack.splice(index, 1);
+					set({ stack: [...newStack, item] });
+					return;
+				}
+
+				const newInstance: ModalInstance = {
+					closeOnClickOutside: true,
+					...config,
+					id,
 				};
 
-				set((state) => {
-					const last = state.modalStack[state.modalStack.length - 1];
-					const isDuplicate =
-						last &&
-						last.contentType === contentType &&
-						last.entityId === entityId &&
-						last.entityLabel === entityLabel;
-
-					if (isDuplicate) return state; // prevent duplicate modals
-
-					return { modalStack: [...state.modalStack, newModal] };
-				});
-			},
-
-			closeModal: () => {
 				set((state) => ({
-					modalStack:
-						state.modalStack.length <= 1 ? [] : state.modalStack.slice(0, -1),
+					stack: [...state.stack, newInstance],
 				}));
 			},
 
-			closeModals: (count) => {
+			close: () => {
 				set((state) => ({
-					modalStack: state.modalStack.slice(
-						0,
-						Math.max(0, state.modalStack.length - count),
+					stack: state.stack.slice(0, -1),
+				}));
+			},
+
+			closeAll: () => set({ stack: [] }),
+
+			replace: (config) => {
+				const id =
+					config.id || `${config.type}-${JSON.stringify(config.data || {})}`;
+				const newInstance: ModalInstance = {
+					closeOnClickOutside: true,
+					...config,
+					id,
+				};
+
+				set((state) => ({
+					stack: [...state.stack.slice(0, -1), newInstance],
+				}));
+			},
+
+			update: (id, updates) => {
+				set((state) => ({
+					stack: state.stack.map((m) =>
+						m.id === id ? { ...m, ...updates } : m,
 					),
 				}));
 			},
-
-			clearAllModals: () => set({ modalStack: [] }),
-
-			setModalState: (modalType, state) =>
-				set((prev) => ({
-					modalStates: { ...prev.modalStates, [modalType]: state },
-				})),
-
-			getModalState: (modalType) => get().modalStates[modalType],
-
-			clearModalState: (modalType) =>
-				set((state) => {
-					const { [modalType]: _, ...rest } = state.modalStates;
-					return { modalStates: rest };
-				}),
-
-			clearAllModalStates: () => set({ modalStates: {} }),
 		}),
 		{ name: "ModalStore" },
 	),
 );
 
 export const useModal = () => {
-	const modalStack = useModalStore((state) => state.modalStack);
-	const currentModal = modalStack[modalStack.length - 1];
+	const stack = useModalStore((state) => state.stack);
+	const top = stack[stack.length - 1];
 
 	return {
-		isOpen: modalStack.length > 0,
-		currentModal,
-		modalContentType: currentModal?.contentType ?? null,
-		entityId: currentModal?.entityId ?? "",
-		entityLabel: currentModal?.entityLabel ?? "",
-		closeOnClickOutside: currentModal?.closeOnClickOutside ?? true,
-		openModal: useModalStore((state) => state.openModal),
-		closeModal: useModalStore((state) => state.closeModal),
-		closeModals: useModalStore((state) => state.closeModals),
-		clearAllModals: useModalStore((state) => state.clearAllModals),
-		setModalState: useModalStore((state) => state.setModalState),
-		getModalState: useModalStore((state) => state.getModalState),
-		clearModalState: useModalStore((state) => state.clearModalState),
-		clearAllModalStates: useModalStore((state) => state.clearAllModalStates),
+		isOpen: stack.length > 0,
+		stack,
+		current: top,
+		open: useModalStore((state) => state.open),
+		close: useModalStore((state) => state.close),
+		closeAll: useModalStore((state) => state.closeAll),
+		replace: useModalStore((state) => state.replace),
+		update: useModalStore((state) => state.update),
 	};
 };

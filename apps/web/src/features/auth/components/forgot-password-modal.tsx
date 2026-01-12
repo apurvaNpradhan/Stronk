@@ -1,7 +1,6 @@
 import { env } from "@base/env/web";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IconLoader2, IconMail } from "@tabler/icons-react";
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -14,54 +13,43 @@ import {
 	ResponsiveModalHeader,
 	ResponsiveModalTitle,
 } from "@/components/ui/responsive-modal";
-import { authClient, sessionQueryOptions } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 import { useModal } from "@/stores/modal.store";
 
-const emailSchema = z.object({
-	newEmail: z.email("Invalid email address"),
+const formSchema = z.object({
+	email: z.email("Invalid email address"),
 });
 
-type EmailFormValues = z.infer<typeof emailSchema>;
+type FormValues = z.infer<typeof formSchema>;
 
-export function ChangeEmailModal() {
+export function ForgotPasswordModal() {
 	const { close } = useModal();
 	const [isLoading, setIsLoading] = useState(false);
-	const { data: session } = useSuspenseQuery(sessionQueryOptions);
-	const currentEmail = session?.data?.user?.email || "";
 
-	const form = useForm<EmailFormValues>({
-		resolver: zodResolver(emailSchema),
+	const form = useForm<FormValues>({
+		resolver: zodResolver(formSchema),
 		defaultValues: {
-			newEmail: "",
+			email: "",
 		},
 	});
 
-	async function onSubmit(values: EmailFormValues) {
-		if (values.newEmail === currentEmail) {
-			form.setError("newEmail", {
-				message: "New email must be different from current email",
-			});
-			return;
-		}
-
+	async function onSubmit(values: FormValues) {
 		setIsLoading(true);
 		try {
-			const { error } = await authClient.changeEmail({
-				newEmail: values.newEmail,
-				callbackURL: `${env.VITE_BASE_URL}/dashboard`,
+			const { error } = await authClient.requestPasswordReset({
+				email: values.email,
+				redirectTo: `${env.VITE_BASE_URL}/reset-password`,
 			});
 
 			if (error) {
 				throw error;
 			}
 
-			toast.success(
-				"Verification links sent to both your old and new email addresses.",
-			);
+			toast.success("Password reset email sent. Please check your inbox.");
 			close();
 		} catch (error) {
 			const message =
-				error instanceof Error ? error.message : "Failed to change email";
+				error instanceof Error ? error.message : "Failed to send reset email";
 			toast.error(message);
 		} finally {
 			setIsLoading(false);
@@ -73,11 +61,11 @@ export function ChangeEmailModal() {
 			<ResponsiveModalHeader>
 				<div className="flex items-center gap-2">
 					<IconMail size={24} className="text-primary" />
-					<ResponsiveModalTitle>Change Email Address</ResponsiveModalTitle>
+					<ResponsiveModalTitle>Forgot Password</ResponsiveModalTitle>
 				</div>
 				<ResponsiveModalDescription>
-					Enter your new email address below. You'll need to verify the change
-					from both your current email and your new email.
+					Enter your email address and we'll send you a link to reset your
+					password.
 				</ResponsiveModalDescription>
 			</ResponsiveModalHeader>
 
@@ -87,40 +75,25 @@ export function ChangeEmailModal() {
 			>
 				<div className="flex flex-col gap-2">
 					<label
-						htmlFor="currentEmailDisplay"
+						htmlFor="email"
 						className="font-medium text-foreground/80 text-sm"
 					>
-						Current Email
+						Email Address
 					</label>
 					<Input
-						id="currentEmailDisplay"
-						value={currentEmail}
-						readOnly
-						className="bg-muted opacity-70"
-					/>
-				</div>
-
-				<div className="flex flex-col gap-2">
-					<label
-						htmlFor="newEmail"
-						className="font-medium text-foreground/80 text-sm"
-					>
-						New Email Address
-					</label>
-					<Input
-						id="newEmail"
+						id="email"
 						type="email"
-						placeholder="new.email@example.com"
-						{...form.register("newEmail")}
+						placeholder="m@example.com"
+						{...form.register("email")}
 						className={
-							form.formState.errors.newEmail
+							form.formState.errors.email
 								? "border-destructive focus-visible:ring-destructive/20"
 								: ""
 						}
 					/>
-					{form.formState.errors.newEmail && (
+					{form.formState.errors.email && (
 						<p className="text-destructive text-xs">
-							{form.formState.errors.newEmail.message}
+							{form.formState.errors.email.message}
 						</p>
 					)}
 				</div>
@@ -138,10 +111,10 @@ export function ChangeEmailModal() {
 						{isLoading ? (
 							<>
 								<IconLoader2 className="mr-2 h-4 w-4 animate-spin" />
-								Processing...
+								Sending...
 							</>
 						) : (
-							"Request Email Change"
+							"Send Reset Link"
 						)}
 					</Button>
 				</ResponsiveModalFooter>

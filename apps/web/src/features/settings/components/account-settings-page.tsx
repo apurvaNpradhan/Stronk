@@ -1,4 +1,4 @@
-import { env } from "@base/env/web";
+import { env } from "@stronk/env/web";
 import {
 	IconBrandAndroid,
 	IconBrandApple,
@@ -218,7 +218,7 @@ export function AccountSettingsPage() {
 		refetch,
 	} = useSuspenseQuery(sessionQueryOptions);
 	const user = session?.data?.user;
-	const { openModal } = useModal();
+	const { open } = useModal();
 
 	const [name, setName] = useState(user?.name || "");
 	const [isUpdatingName, setIsUpdatingName] = useState(false);
@@ -359,9 +359,12 @@ export function AccountSettingsPage() {
 							<Button
 								variant="outline"
 								size="sm"
-								disabled
 								className="bg-background"
-								onClick={() => openModal("UPDATE_EMAIL")}
+								onClick={() =>
+									open({
+										type: "UPDATE_EMAIL",
+									})
+								}
 							>
 								Change email
 							</Button>
@@ -382,7 +385,11 @@ export function AccountSettingsPage() {
 								variant="outline"
 								size="sm"
 								className="bg-background"
-								onClick={() => openModal("UPDATE_PASSWORD")}
+								onClick={() =>
+									open({
+										type: "UPDATE_PASSWORD",
+									})
+								}
 							>
 								Change password
 							</Button>
@@ -396,7 +403,11 @@ export function AccountSettingsPage() {
 					<Item
 						variant="muted"
 						className="cursor-pointer transition-colors hover:bg-muted/80"
-						onClick={() => openModal("DELETE_USER")}
+						onClick={() =>
+							open({
+								type: "DELETE_ACCOUNT",
+							})
+						}
 					>
 						<ItemContent className="gap-1">
 							<ItemTitle className="font-medium text-destructive">

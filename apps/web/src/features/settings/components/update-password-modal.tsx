@@ -6,13 +6,13 @@ import { toast } from "sonner";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
-import {
-	DialogDescription,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import {
+	ResponsiveModalDescription,
+	ResponsiveModalFooter,
+	ResponsiveModalHeader,
+	ResponsiveModalTitle,
+} from "@/components/ui/responsive-modal";
 import { authClient } from "@/lib/auth-client";
 import { useModal } from "@/stores/modal.store";
 
@@ -30,7 +30,7 @@ const passwordSchema = z
 type PasswordFormValues = z.infer<typeof passwordSchema>;
 
 export function UpdatePasswordModal() {
-	const { closeModal } = useModal();
+	const { close } = useModal();
 	const [isLoading, setIsLoading] = useState(false);
 	const [showCurrentPassword, setShowCurrentPassword] = useState(false);
 	const [showNewPassword, setShowNewPassword] = useState(false);
@@ -58,7 +58,7 @@ export function UpdatePasswordModal() {
 			}
 
 			toast.success("Password updated successfully");
-			closeModal();
+			close();
 		} catch (error) {
 			const message =
 				error instanceof Error ? error.message : "Failed to update password";
@@ -70,12 +70,12 @@ export function UpdatePasswordModal() {
 
 	return (
 		<div className="flex flex-col gap-6 p-1">
-			<DialogHeader>
-				<DialogTitle>Update Password</DialogTitle>
-				<DialogDescription>
+			<ResponsiveModalHeader>
+				<ResponsiveModalTitle>Update Password</ResponsiveModalTitle>
+				<ResponsiveModalDescription>
 					Ensure your account is using a long, random password to stay secure.
-				</DialogDescription>
-			</DialogHeader>
+				</ResponsiveModalDescription>
+			</ResponsiveModalHeader>
 
 			<form
 				onSubmit={form.handleSubmit(onSubmit)}
@@ -178,11 +178,11 @@ export function UpdatePasswordModal() {
 					)}
 				</div>
 
-				<DialogFooter className="mt-2">
+				<ResponsiveModalFooter className="mt-2">
 					<Button
 						type="button"
 						variant="ghost"
-						onClick={closeModal}
+						onClick={close}
 						disabled={isLoading}
 					>
 						Cancel
@@ -197,7 +197,7 @@ export function UpdatePasswordModal() {
 							"Update Password"
 						)}
 					</Button>
-				</DialogFooter>
+				</ResponsiveModalFooter>
 			</form>
 		</div>
 	);

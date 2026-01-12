@@ -32,6 +32,7 @@ import { Input } from "@/components/ui/input";
 import { usePending } from "@/components/ui/pending";
 import { authClient, sessionQueryOptions } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
+import { useModal } from "@/stores/modal.store";
 import { queryClient } from "@/utils/orpc";
 
 const signInSchema = z.object({
@@ -46,6 +47,7 @@ export default function SignInForm({
 	...props
 }: React.ComponentProps<"div">) {
 	const navigate = useNavigate();
+	const { open } = useModal();
 	const form = useForm<SignInValues>({
 		resolver: zodResolver(signInSchema),
 		defaultValues: {
@@ -156,12 +158,13 @@ export default function SignInForm({
 							<Field>
 								<div className="flex items-center">
 									<FieldLabel htmlFor="password">Password</FieldLabel>
-									<Link
-										to={"/forgot-password"}
+									<button
+										type="button"
+										onClick={() => open({ type: "FORGOT_PASSWORD" })}
 										className="ml-auto text-sm underline-offset-4 hover:underline"
 									>
 										Forgot your password?
-									</Link>
+									</button>
 								</div>
 								<Controller
 									control={form.control}

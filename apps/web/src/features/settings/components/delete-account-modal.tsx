@@ -7,26 +7,29 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
-import {
-	DialogDescription,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import {
+	ResponsiveModalDescription,
+	ResponsiveModalFooter,
+	ResponsiveModalHeader,
+	ResponsiveModalTitle,
+} from "@/components/ui/responsive-modal";
 import { authClient, sessionQueryOptions } from "@/lib/auth-client";
 import { useModal } from "@/stores/modal.store";
 
 export function DeleteAccountModal() {
-	const { closeModal } = useModal();
+	const { close } = useModal();
 	const [isLoading, setIsLoading] = useState(false);
 	const { data: session } = useSuspenseQuery(sessionQueryOptions);
 	const userEmail = session?.data?.user?.email || "";
 
 	const deleteSchema = z.object({
-		email: z.email("Invalid email").refine((val) => val === userEmail, {
-			message: "Email doesn't match your account email",
-		}),
+		email: z
+			.string()
+			.email("Invalid email")
+			.refine((val) => val === userEmail, {
+				message: "Email doesn't match your account email",
+			}),
 	});
 
 	type DeleteFormValues = z.infer<typeof deleteSchema>;
@@ -54,7 +57,7 @@ export function DeleteAccountModal() {
 				);
 			}
 
-			closeModal();
+			close();
 		} catch (error) {
 			const message =
 				error instanceof Error ? error.message : "Failed to delete account";
@@ -66,16 +69,16 @@ export function DeleteAccountModal() {
 
 	return (
 		<div className="flex flex-col gap-6 p-1">
-			<DialogHeader>
+			<ResponsiveModalHeader>
 				<div className="flex items-center gap-2 text-destructive">
 					<IconAlertTriangle size={24} />
-					<DialogTitle>Delete Account</DialogTitle>
+					<ResponsiveModalTitle>Delete Account</ResponsiveModalTitle>
 				</div>
-				<DialogDescription>
+				<ResponsiveModalDescription>
 					This action is permanent and cannot be undone. All your data,
 					including projects and workspaces, will be permanently removed.
-				</DialogDescription>
-			</DialogHeader>
+				</ResponsiveModalDescription>
+			</ResponsiveModalHeader>
 
 			<form
 				onSubmit={form.handleSubmit(onSubmit)}
@@ -106,7 +109,7 @@ export function DeleteAccountModal() {
 					)}
 				</div>
 
-				<DialogFooter className="mt-2 flex flex-col gap-2 sm:flex-col">
+				<ResponsiveModalFooter className="mt-2 flex flex-col gap-2 sm:flex-col">
 					<Button
 						type="submit"
 						variant="destructive"
@@ -125,13 +128,13 @@ export function DeleteAccountModal() {
 					<Button
 						type="button"
 						variant="ghost"
-						onClick={closeModal}
+						onClick={close}
 						disabled={isLoading}
 						className="w-full"
 					>
 						Cancel
 					</Button>
-				</DialogFooter>
+				</ResponsiveModalFooter>
 			</form>
 		</div>
 	);
