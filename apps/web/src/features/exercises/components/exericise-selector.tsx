@@ -3,7 +3,6 @@ import {
 	IconBarbell,
 	IconCheck,
 	IconLoader2,
-	IconSearch,
 	IconTarget,
 } from "@tabler/icons-react";
 import { useDebouncedCallback } from "@tanstack/react-pacer";
@@ -14,11 +13,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-	InputGroup,
-	InputGroupAddon,
-	InputGroupInput,
-} from "@/components/ui/input-group";
-import { Skeleton } from "@/components/ui/skeleton";
+	Command,
+	CommandEmpty,
+	CommandGroup,
+	CommandInput,
+	CommandItem,
+	CommandList,
+} from "@/components/ui/command";
 import { cn } from "@/lib/utils";
 import { orpc } from "@/utils/orpc";
 
@@ -35,19 +36,6 @@ interface ExerciseSelectorProps {
 
 	closeOnSelect?: boolean;
 	className?: string;
-}
-
-function ExerciseItemSkeleton() {
-	return (
-		<div className="flex items-center gap-3 p-3">
-			<Skeleton className="h-12 w-12 rounded-lg" />
-			<div className="flex-1 space-y-2">
-				<Skeleton className="h-4 w-32" />
-				<Skeleton className="h-3 w-24" />
-			</div>
-			<Skeleton className="h-5 w-5 rounded" />
-		</div>
-	);
 }
 
 export function ExerciseSelector({
@@ -82,19 +70,20 @@ export function ExerciseSelector({
 		isFetchingNextPage,
 		status,
 		isPending,
-	} = useInfiniteQuery(
-		orpc.exercise.listExercises.infiniteOptions({
+	} = useInfiniteQuery({
+		...orpc.exercise.listExercises.infiniteOptions({
+			queryKey: ["exercises", debouncedSearch],
 			input: (cursor) => ({
 				limit: 20,
 				cursor: cursor as string | undefined,
 				search: debouncedSearch,
 			}),
 			getNextPageParam: (lastPage) => lastPage.nextCursor,
-			initialPageParam: undefined as string | undefined,
+			initialPageParam: undefined,
 		}),
-	);
+	});
 
-	const { ref, inView } = useInView({ threshold: 0.1 });
+	const { ref, inView } = useInView({ threshold: 0 });
 
 	if (inView && hasNextPage && !isFetchingNextPage) {
 		fetchNextPage();
@@ -156,48 +145,42 @@ export function ExerciseSelector({
 	};
 
 	const isEmpty = status === "success" && exercises.length === 0;
+
 	return (
-		<div className={cn("flex h-full flex-col", className)}>
-			<div className="border-b p-4">
-				<InputGroup>
-					<InputGroupInput
-						placeholder="Search exercises..."
-						value={search}
-						onChange={(e) => handleSearchChange(e.target.value)}
-					/>
-					<InputGroupAddon>
-						<IconSearch className="h-4 w-4" />
-					</InputGroupAddon>
-				</InputGroup>
-			</div>
-			<div className="flex-1 overflow-y-auto">
+		<Command
+			shouldFilter={false}
+			className={cn("flex h-full flex-col", className)}
+		>
+			<CommandInput
+				placeholder="Search exercises..."
+				value={search}
+				onValueChange={handleSearchChange}
+			/>
+			<CommandList className="max-h-[450px] flex-1">
 				{isPending ? (
-					<div className="p-2">
-						{[1, 2, 3, 4, 5, 6].map((id) => (
-							<ExerciseItemSkeleton key={id} />
-						))}
+					<div className="flex h-full flex-col items-center justify-center gap-2 p-4 text-muted-foreground">
+						<IconLoader2 className="h-6 w-6 animate-spin" />
+						<p className="text-sm">Loading exercises...</p>
 					</div>
 				) : isEmpty ? (
-					<div className="flex h-full flex-col items-center justify-center p-8 text-muted-foreground">
-						<IconSearch className="mb-4 h-12 w-12 opacity-20" />
-						<p className="font-medium">No exercises found</p>
-						{search && (
-							<p className="mt-1 text-sm">Try a different search term</p>
-						)}
-					</div>
+					<CommandEmpty className="flex h-full flex-col items-center justify-center p-4">
+						<div className="flex flex-col items-center justify-center text-muted-foreground">
+							<p className="font-medium">No exercises found</p>
+							{search && (
+								<p className="mt-1 text-sm">Try a different search term</p>
+							)}
+						</div>
+					</CommandEmpty>
 				) : (
-					<div className="p-2">
+					<CommandGroup>
 						{exercises.map((exercise) => {
 							const selected = isSelected(exercise);
 							return (
-								<button
+								<CommandItem
 									key={exercise.publicId}
-									type="button"
-									onClick={() => handleToggle(exercise)}
-									className={cn(
-										"flex w-full items-center gap-3 rounded-lg p-3 text-left transition-colors",
-										selected ? "bg-primary/10" : "hover:bg-muted",
-									)}
+									value={exercise.publicId}
+									onSelect={() => handleToggle(exercise)}
+									className="flex items-center gap-3 px-2 py-3"
 								>
 									<Avatar className="h-12 w-12 rounded-lg">
 										<AvatarImage
@@ -247,7 +230,7 @@ export function ExerciseSelector({
 											<IconCheck className="h-3 w-3 text-primary-foreground" />
 										)}
 									</div>
-								</button>
+								</CommandItem>
 							);
 						})}
 
@@ -256,9 +239,9 @@ export function ExerciseSelector({
 								<IconLoader2 className="h-5 w-5 animate-spin text-muted-foreground" />
 							)}
 						</div>
-					</div>
+					</CommandGroup>
 				)}
-			</div>
+			</CommandList>
 
 			{onExercisesConfirm && stagedExercises.length > 0 && (
 				<div className="flex items-center justify-between border-t p-4">
@@ -279,6 +262,6 @@ export function ExerciseSelector({
 					</div>
 				</div>
 			)}
-		</div>
+		</Command>
 	);
 }

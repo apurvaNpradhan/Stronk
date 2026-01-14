@@ -10,8 +10,10 @@ export const CreateRoutineInputSchema = InsertRoutine.omit({
 }).extend({
 	exercises: z
 		.array(
-			InsertRoutineExercise.omit({ exerciseId: true }).extend({
-				exercisePublicId: z.uuid(),
+			InsertRoutineExercise.omit({
+				exerciseId: true,
+			}).extend({
+				exercisePublicId: z.string(),
 				sets: z.array(InsertRoutineSet).optional(),
 			}),
 		)

@@ -21,7 +21,9 @@ import { Route as publicPrivacyRouteImport } from './routes/(public)/privacy'
 import { Route as publicGoodbyeRouteImport } from './routes/(public)/goodbye'
 import { Route as authenicatedDashboardRouteImport } from './routes/(authenicated)/dashboard'
 import { Route as authenicatedOnboardingRouteRouteImport } from './routes/(authenicated)/onboarding/route'
+import { Route as authenicatedRoutinesIndexRouteImport } from './routes/(authenicated)/routines/index'
 import { Route as authenicatedRoutinesNewRouteImport } from './routes/(authenicated)/routines/new'
+import { Route as authenicatedRoutinesIdRouteImport } from './routes/(authenicated)/routines/$id'
 import { Route as authenicatedOnboardingCompleteRouteImport } from './routes/(authenicated)/onboarding/complete'
 import { Route as authenicatedExercisesAllRouteImport } from './routes/(authenicated)/exercises/all'
 import { Route as authenicatedSettingsAccountProfileIndexRouteImport } from './routes/(authenicated)/settings/account/profile/index'
@@ -86,9 +88,20 @@ const authenicatedOnboardingRouteRoute =
     path: '/onboarding',
     getParentRoute: () => authenicatedRouteRoute,
   } as any)
+const authenicatedRoutinesIndexRoute =
+  authenicatedRoutinesIndexRouteImport.update({
+    id: '/routines/',
+    path: '/routines/',
+    getParentRoute: () => authenicatedRouteRoute,
+  } as any)
 const authenicatedRoutinesNewRoute = authenicatedRoutinesNewRouteImport.update({
   id: '/routines/new',
   path: '/routines/new',
+  getParentRoute: () => authenicatedRouteRoute,
+} as any)
+const authenicatedRoutinesIdRoute = authenicatedRoutinesIdRouteImport.update({
+  id: '/routines/$id',
+  path: '/routines/$id',
   getParentRoute: () => authenicatedRouteRoute,
 } as any)
 const authenicatedOnboardingCompleteRoute =
@@ -129,7 +142,9 @@ export interface FileRoutesByFullPath {
   '/': typeof publicIndexRoute
   '/exercises/all': typeof authenicatedExercisesAllRoute
   '/onboarding/complete': typeof authenicatedOnboardingCompleteRoute
+  '/routines/$id': typeof authenicatedRoutinesIdRoute
   '/routines/new': typeof authenicatedRoutinesNewRoute
+  '/routines': typeof authenicatedRoutinesIndexRoute
   '/settings/account/preferences': typeof authenicatedSettingsAccountPreferencesIndexRoute
   '/settings/account/profile': typeof authenicatedSettingsAccountProfileIndexRoute
 }
@@ -146,7 +161,9 @@ export interface FileRoutesByTo {
   '/': typeof publicIndexRoute
   '/exercises/all': typeof authenicatedExercisesAllRoute
   '/onboarding/complete': typeof authenicatedOnboardingCompleteRoute
+  '/routines/$id': typeof authenicatedRoutinesIdRoute
   '/routines/new': typeof authenicatedRoutinesNewRoute
+  '/routines': typeof authenicatedRoutinesIndexRoute
   '/settings/account/preferences': typeof authenicatedSettingsAccountPreferencesIndexRoute
   '/settings/account/profile': typeof authenicatedSettingsAccountProfileIndexRoute
 }
@@ -166,7 +183,9 @@ export interface FileRoutesById {
   '/(public)/': typeof publicIndexRoute
   '/(authenicated)/exercises/all': typeof authenicatedExercisesAllRoute
   '/(authenicated)/onboarding/complete': typeof authenicatedOnboardingCompleteRoute
+  '/(authenicated)/routines/$id': typeof authenicatedRoutinesIdRoute
   '/(authenicated)/routines/new': typeof authenicatedRoutinesNewRoute
+  '/(authenicated)/routines/': typeof authenicatedRoutinesIndexRoute
   '/(authenicated)/settings/account/preferences/': typeof authenicatedSettingsAccountPreferencesIndexRoute
   '/(authenicated)/settings/account/profile/': typeof authenicatedSettingsAccountProfileIndexRoute
 }
@@ -185,7 +204,9 @@ export interface FileRouteTypes {
     | '/'
     | '/exercises/all'
     | '/onboarding/complete'
+    | '/routines/$id'
     | '/routines/new'
+    | '/routines'
     | '/settings/account/preferences'
     | '/settings/account/profile'
   fileRoutesByTo: FileRoutesByTo
@@ -202,7 +223,9 @@ export interface FileRouteTypes {
     | '/'
     | '/exercises/all'
     | '/onboarding/complete'
+    | '/routines/$id'
     | '/routines/new'
+    | '/routines'
     | '/settings/account/preferences'
     | '/settings/account/profile'
   id:
@@ -221,7 +244,9 @@ export interface FileRouteTypes {
     | '/(public)/'
     | '/(authenicated)/exercises/all'
     | '/(authenicated)/onboarding/complete'
+    | '/(authenicated)/routines/$id'
     | '/(authenicated)/routines/new'
+    | '/(authenicated)/routines/'
     | '/(authenicated)/settings/account/preferences/'
     | '/(authenicated)/settings/account/profile/'
   fileRoutesById: FileRoutesById
@@ -321,11 +346,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authenicatedOnboardingRouteRouteImport
       parentRoute: typeof authenicatedRouteRoute
     }
+    '/(authenicated)/routines/': {
+      id: '/(authenicated)/routines/'
+      path: '/routines'
+      fullPath: '/routines'
+      preLoaderRoute: typeof authenicatedRoutinesIndexRouteImport
+      parentRoute: typeof authenicatedRouteRoute
+    }
     '/(authenicated)/routines/new': {
       id: '/(authenicated)/routines/new'
       path: '/routines/new'
       fullPath: '/routines/new'
       preLoaderRoute: typeof authenicatedRoutinesNewRouteImport
+      parentRoute: typeof authenicatedRouteRoute
+    }
+    '/(authenicated)/routines/$id': {
+      id: '/(authenicated)/routines/$id'
+      path: '/routines/$id'
+      fullPath: '/routines/$id'
+      preLoaderRoute: typeof authenicatedRoutinesIdRouteImport
       parentRoute: typeof authenicatedRouteRoute
     }
     '/(authenicated)/onboarding/complete': {
@@ -377,7 +416,9 @@ interface authenicatedRouteRouteChildren {
   authenicatedOnboardingRouteRoute: typeof authenicatedOnboardingRouteRouteWithChildren
   authenicatedDashboardRoute: typeof authenicatedDashboardRoute
   authenicatedExercisesAllRoute: typeof authenicatedExercisesAllRoute
+  authenicatedRoutinesIdRoute: typeof authenicatedRoutinesIdRoute
   authenicatedRoutinesNewRoute: typeof authenicatedRoutinesNewRoute
+  authenicatedRoutinesIndexRoute: typeof authenicatedRoutinesIndexRoute
   authenicatedSettingsAccountPreferencesIndexRoute: typeof authenicatedSettingsAccountPreferencesIndexRoute
   authenicatedSettingsAccountProfileIndexRoute: typeof authenicatedSettingsAccountProfileIndexRoute
 }
@@ -387,7 +428,9 @@ const authenicatedRouteRouteChildren: authenicatedRouteRouteChildren = {
     authenicatedOnboardingRouteRouteWithChildren,
   authenicatedDashboardRoute: authenicatedDashboardRoute,
   authenicatedExercisesAllRoute: authenicatedExercisesAllRoute,
+  authenicatedRoutinesIdRoute: authenicatedRoutinesIdRoute,
   authenicatedRoutinesNewRoute: authenicatedRoutinesNewRoute,
+  authenicatedRoutinesIndexRoute: authenicatedRoutinesIndexRoute,
   authenicatedSettingsAccountPreferencesIndexRoute:
     authenicatedSettingsAccountPreferencesIndexRoute,
   authenicatedSettingsAccountProfileIndexRoute:

@@ -61,35 +61,43 @@ const responsiveModalVariants = (
 
 interface ResponsiveModalContentProps extends DialogPrimitive.Popup.Props {
 	side?: "top" | "bottom" | "left" | "right";
+	showCloseButton?: boolean;
 }
 
 const ResponsiveModalContent = React.forwardRef<
 	HTMLDivElement,
 	ResponsiveModalContentProps
->(({ side = "bottom", className, children, ...props }, ref) => (
-	<ResponsiveModalPortal>
-		<ResponsiveModalOverlay />
-		<DialogPrimitive.Popup
-			ref={ref}
-			className={cn(responsiveModalVariants(side), className)}
-			{...props}
-		>
-			{children}
-			<ResponsiveModalClose
-				render={
-					<Button
-						variant="ghost"
-						size="icon-sm"
-						className="absolute top-4 right-4 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-open:bg-secondary"
-					/>
-				}
+>(
+	(
+		{ side = "bottom", className, children, showCloseButton = true, ...props },
+		ref,
+	) => (
+		<ResponsiveModalPortal>
+			<ResponsiveModalOverlay />
+			<DialogPrimitive.Popup
+				ref={ref}
+				className={cn(responsiveModalVariants(side), className)}
+				{...props}
 			>
-				<IconX className="h-4 w-4" />
-				<span className="sr-only">Close</span>
-			</ResponsiveModalClose>
-		</DialogPrimitive.Popup>
-	</ResponsiveModalPortal>
-));
+				{children}
+				{showCloseButton && (
+					<ResponsiveModalClose
+						render={
+							<Button
+								variant="ghost"
+								size="icon-sm"
+								className="absolute top-4 right-4 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-open:bg-secondary"
+							/>
+						}
+					>
+						<IconX className="h-4 w-4" />
+						<span className="sr-only">Close</span>
+					</ResponsiveModalClose>
+				)}
+			</DialogPrimitive.Popup>
+		</ResponsiveModalPortal>
+	),
+);
 ResponsiveModalContent.displayName = "ResponsiveModalContent";
 
 const ResponsiveModalHeader = ({

@@ -1,9 +1,8 @@
-import type { AppRouterClient } from "@base/api/routers/index";
-
-import { env } from "@base/env/web";
 import { createORPCClient } from "@orpc/client";
 import { RPCLink } from "@orpc/client/fetch";
 import { createTanstackQueryUtils } from "@orpc/tanstack-query";
+import type { AppRouterClient } from "@stronk/api/routers/index";
+import { env } from "@stronk/env/web";
 import { QueryCache, QueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
